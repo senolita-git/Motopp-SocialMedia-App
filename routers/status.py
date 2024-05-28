@@ -20,6 +20,6 @@ def create(request: StatusPostCreate, db: Session = Depends(get_db), current_use
 def posts(db: Session = Depends(get_db)):
     return db_status.get_all(db)
  
-@router.get('/delete/{id}') # id of the post
+@router.delete('/{id}') # id of the post
 def delete(id: int, db:Session = Depends(get_db), current_user: UserAuth = Depends(get_current_user)):
     return db_status.delete(db, id, current_user.id)
