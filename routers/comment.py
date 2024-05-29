@@ -1,3 +1,4 @@
+from typing import Optional
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from db.database import get_db
@@ -10,8 +11,8 @@ router = APIRouter(
     tags = ['comment']
 )
 
-@router.get('/all/{post_id}')
-def comments(post_id: int, db:Session = Depends(get_db)):
+@router.get('/')
+def comments(post_id: Optional[int] = None, db:Session = Depends(get_db)):
     return db_comment.get_all(db, post_id)
 
 @router.post('')
