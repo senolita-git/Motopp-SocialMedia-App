@@ -10,7 +10,7 @@ from db.models import DbGroup
 router = APIRouter( prefix="/groups", tags=["groups"])
 
 
-@router.post("/groups/", response_model=GroupDisplay)
+@router.post('', response_model=GroupDisplay)
 def create_group(group: GroupCreate, db: Session = Depends(get_db), current_user: UserAuth = Depends(get_current_user)):
     db_group = DbGroup(name=group.name, description=group.description, owner_id=current_user.id)
     db.add(db_group)
@@ -18,7 +18,7 @@ def create_group(group: GroupCreate, db: Session = Depends(get_db), current_user
     db.refresh(db_group)
     return db_group
 
-@router.post("/groups/{group_id}/join", response_model=GroupDisplay)
+@router.post("/{group_id}/join", response_model=GroupDisplay)
 def join_group(group_id: int, db: Session = Depends(get_db), current_user: UserAuth = Depends(get_current_user)):
     group = db.query(DbGroup).filter(DbGroup.id == group_id).first()
     if not group:
@@ -27,7 +27,7 @@ def join_group(group_id: int, db: Session = Depends(get_db), current_user: UserA
     db.commit()
     return group
 
-@router.get("/groups/{group_id}/members", response_model=List[UserDisplay])
+@router.get("/{group_id}/members", response_model=List[UserDisplay])
 def list_group_members(group_id: int, db: Session = Depends(get_db), current_user: UserAuth = Depends(get_current_user)):
     group = db.query(DbGroup).filter(DbGroup.id == group_id).first()
     if not group:
