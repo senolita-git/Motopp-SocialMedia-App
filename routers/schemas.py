@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from datetime import datetime
-from typing import List
+from typing import List, Union
 
 class UserBase(BaseModel):
     username: str
@@ -41,7 +41,6 @@ class PostDisplay(BaseModel):
     caption: str
     timestamp: datetime
     user: User
-    comments: List[Comment]
     class Config(): #we will not get any error when we try to receive postdisplay data type
         orm_mode = True 
 
@@ -86,5 +85,11 @@ class GroupDisplay(BaseModel):
     description: str
     owner_id: int
 
+    class Config(): 
+        orm_mode = True
+
+class CombinedPost(BaseModel):
+    posts: List[Union[PostDisplay, StatusPostDisplay]]
+    
     class Config(): 
         orm_mode = True
