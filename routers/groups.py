@@ -33,3 +33,20 @@ def list_group_members(group_id: int, db: Session = Depends(get_db), current_use
     if not group:
         raise HTTPException(status_code=404, detail="Group not found")
     return group.members
+
+@router.post('/leave/{group_id}', response_model=GroupDisplay)
+def leave_group(
+    group_id: int, 
+    db: Session = Depends(get_db), 
+    current_user: UserAuth = Depends(get_current_user)
+):
+    group = db.query(DbGroup).filter(DbGroup.id == group_id).first()
+    if not group:
+        raise HTTPException(status_code=404, detail="Group not found")
+
+    if current_user not in group.members:
+        raise HTTPException(status_code=400, detail="You are not a member of this group")
+
+    group.members.remove(current_user)
+    db.commit()
+    return group
