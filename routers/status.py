@@ -15,10 +15,6 @@ router = APIRouter(
 @router.post('', response_model=StatusPostDisplay)
 def create(request: StatusPostCreate, db: Session = Depends(get_db), current_user: UserAuth = Depends(get_current_user)):
     return db_status.create_status(db, request)
-
-@router.get('/all', response_model=List[StatusPostDisplay])
-def posts(db: Session = Depends(get_db)):
-    return db_status.get_all(db)
  
 @router.delete('/{id}') # id of the post
 def delete(id: int, db:Session = Depends(get_db), current_user: UserAuth = Depends(get_current_user)):

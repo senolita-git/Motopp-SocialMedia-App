@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from db import models
 from db.database import engine
-from routers import user, post, comment,status, groups, posts
+from routers import user, post, comment,status, groups, posts, request
 from fastapi.staticfiles import StaticFiles
 from auth import authentication
 
@@ -14,6 +14,7 @@ app.include_router(comment.router)
 app.include_router(authentication.router) #added to our documentation
 app.include_router(status.router)
 app.include_router(groups.router)
+app.include_router(request.router)
 
 
 @app.get("/")
