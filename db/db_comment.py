@@ -45,3 +45,14 @@ def get_all(db: Session, post_id: int, status_post_id: int):
         query = query.filter(DbComment.status_post_id == status_post_id)
     
     return query.all()
+
+def get_comment_by_id(db: Session, comment_id: int):
+    return db.query(DbComment).filter(DbComment.id == comment_id).first()
+
+def delete(db: Session, comment_id: int):
+    comment = db.query(DbComment).filter(DbComment.id == comment_id).first()
+    if not comment:
+        raise HTTPException(status_code=404, detail="Comment not found")
+    db.delete(comment)
+    db.commit()
+    return {"message": "Comment deleted successfully"}

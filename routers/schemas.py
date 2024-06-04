@@ -11,6 +11,10 @@ class UserBase(BaseModel):
 class UserDisplay(BaseModel):
     username: str
     email: str
+    name: Optional[str] = None
+    surname: Optional[str] = None
+    bio: Optional[str] = None
+    social_media_link: Optional[str] = None
     class Config():
         orm_mode = True
 
@@ -120,3 +124,9 @@ class FriendRequestResponse(BaseModel):
 
 class FriendRequestUpdate(BaseModel):
     status: FriendRequestStatus
+    
+class UserUpdate(BaseModel):
+    name: Optional[str] = None
+    surname: Optional[str] = None
+    bio: Optional[str] = None
+    social_media_link: Optional[str] = None

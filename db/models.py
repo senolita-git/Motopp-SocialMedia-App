@@ -15,6 +15,10 @@ class DbUser(Base):
     username = Column(String)
     email = Column(String)
     password = Column(String)
+    name = Column(String)  # Add name field
+    surname = Column(String)  # Add surname field
+    bio = Column(String) # Add bio field
+    social_media_link = Column(String)
 
     items = relationship('DbPost', back_populates='user')
     status = relationship('DbStatus', back_populates='user')
