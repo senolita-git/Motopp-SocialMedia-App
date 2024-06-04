@@ -1,7 +1,8 @@
 from db.database import Base
-from sqlalchemy import Column, Integer, String, DateTime, Table
+from sqlalchemy import Column, Integer, String, DateTime, Table, Enum as SQLEnum
 from sqlalchemy.sql.schema import ForeignKey
 from sqlalchemy.orm import relationship
+from enum import Enum as PyEnum
 
 group_membership = Table('group_membership', Base.metadata,
                          Column('user_id', Integer, ForeignKey('user.id'), primary_key = True),
@@ -39,7 +40,10 @@ class DbComment(Base):
     username = Column(String)
     timestamp = Column(DateTime)
     post_id = Column(Integer, ForeignKey('post.id'))
+    status_post_id = Column(Integer, ForeignKey('status_post.id'))
+    
     post = relationship("DbPost", back_populates="comments")
+    status_post = relationship('DbStatus', back_populates='comments')
 
 class DbStatus(Base):
     __tablename__ = 'status_post'
@@ -48,6 +52,7 @@ class DbStatus(Base):
     user_id = Column(Integer, ForeignKey('user.id'))
     timestamp = Column(DateTime)
     user = relationship('DbUser', back_populates='status')
+    comments = relationship('DbComment', back_populates='status_post')
 
 class DbGroup(Base):
     __tablename__ = 'groups'
@@ -58,3 +63,18 @@ class DbGroup(Base):
 
     owner = relationship('DbUser', back_populates='owned_groups')
     members = relationship('DbUser', secondary=group_membership, back_populates='groups')
+
+class FriendRequestStatus(PyEnum):
+    PENDING = "pending"
+    ACCEPTED = "accepted"
+    DENIED = "denied"
+
+class DbFriendRequest(Base):
+    __tablename__ = 'friend_request'
+    id = Column(Integer, primary_key=True, index=True)
+    sender_id = Column(Integer, ForeignKey('user.id'))
+    receiver_id = Column(Integer, ForeignKey('user.id'))
+    status = Column(SQLEnum(FriendRequestStatus), default=FriendRequestStatus.PENDING)
+
+    sender = relationship('DbUser', foreign_keys=[sender_id])
+    receiver = relationship('DbUser', foreign_keys=[receiver_id])

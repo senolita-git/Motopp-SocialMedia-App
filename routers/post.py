@@ -26,10 +26,6 @@ def create(request: PostBase, db: Session = Depends(get_db), current_user: UserA
                             detail = "Parameter image_url_type can only take values 'absolute' or 'relative'.")
     return db_post.create(db, request)
 
-@router.get('/all', response_model=List[PostDisplay])
-def posts(db: Session = Depends(get_db)):
-    return db_post.get_all(db)
-
 @router.post('/image')
 def upload_image(image: UploadFile = File(...), current_user: UserAuth = Depends(get_current_user)):
     letters = string.ascii_letters
