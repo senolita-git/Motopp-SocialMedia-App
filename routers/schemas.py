@@ -16,7 +16,7 @@ class UserDisplay(BaseModel):
     bio: Optional[str] = None
     social_media_link: Optional[str] = None
     class Config():
-        orm_mode = True
+        from_attributes = True
 
 class PostBase(BaseModel):
     image_url: str
@@ -28,7 +28,7 @@ class PostBase(BaseModel):
 class User(BaseModel):
     username: str
     class Config():
-        orm_mode = True
+        from_attributes = True
 
 #for post display
 class Comment(BaseModel):
@@ -36,7 +36,7 @@ class Comment(BaseModel):
     username: str
     timestamp: datetime
     class Config(): 
-        orm_mode = True
+        from_attributes = True
 
 
 class PostDisplay(BaseModel):
@@ -47,7 +47,7 @@ class PostDisplay(BaseModel):
     timestamp: datetime
     user: User
     class Config(): #we will not get any error when we try to receive postdisplay data type
-        orm_mode = True 
+        from_attributes = True 
 
 #create a new data type for user authentication
 class UserAuth(BaseModel):
@@ -61,7 +61,7 @@ class Comment(BaseModel):
     username: str
     timestamp: datetime
     class Config(): 
-        orm_mode = True
+        from_attributes = True
 
 class CommentBase(BaseModel):
     username: str
@@ -79,7 +79,7 @@ class StatusPostDisplay(BaseModel):
     timestamp: datetime
     user: User
     class Config(): 
-        orm_mode = True
+        from_attributes = True
 
 class GroupCreate(BaseModel):
     name: str
@@ -92,13 +92,13 @@ class GroupDisplay(BaseModel):
     owner_id: int
 
     class Config(): 
-        orm_mode = True
+        from_attributes = True
 
 class CombinedPost(BaseModel):
     posts: List[Union[PostDisplay, StatusPostDisplay]]
     
     class Config(): 
-        orm_mode = True
+        from_attributes = True
  
 #friend request    
 class FriendRequestBase(BaseModel):
@@ -107,7 +107,7 @@ class FriendRequestBase(BaseModel):
     status: FriendRequestStatus
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class FriendRequestCreate(BaseModel):
     receiver_id: int
@@ -119,7 +119,7 @@ class FriendRequestResponse(BaseModel):
     status: FriendRequestStatus
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class FriendRequestUpdate(BaseModel):
     status: FriendRequestStatus
@@ -145,4 +145,4 @@ class MessageDisplay(BaseModel):
     timestamp: datetime
 
     class Config:
-        orm_mode = True
+        from_attributes = True
