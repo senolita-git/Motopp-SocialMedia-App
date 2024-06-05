@@ -93,3 +93,21 @@ class CombinedPost(BaseModel):
     
     class Config(): 
         orm_mode = True
+
+
+
+#chat schema.
+
+class MessageBase(BaseModel):
+    receiver_id: int
+    content: str
+
+class MessageDisplay(BaseModel):
+    id: int
+    sender_id: int
+    receiver_id: int
+    content: str
+    timestamp: datetime
+
+    class Config:
+        orm_mode = True
