@@ -1,7 +1,9 @@
+import datetime
 from db.database import Base
 from sqlalchemy import Column, Integer, String, DateTime, Table, Enum as SQLEnum
 from sqlalchemy.sql.schema import ForeignKey
 from sqlalchemy.orm import relationship
+from datetime import datetime
 from enum import Enum as PyEnum
 
 group_membership = Table('group_membership', Base.metadata,
@@ -68,6 +70,17 @@ class DbGroup(Base):
     owner = relationship('DbUser', back_populates='owned_groups')
     members = relationship('DbUser', secondary=group_membership, back_populates='groups')
 
+
+#chat models
+
+class DbMessage(Base):
+    __tablename__ = 'message'
+    id = Column(Integer, primary_key=True, index=True)
+    sender_id = Column(Integer, ForeignKey('user.id'))
+    receiver_id = Column(Integer, ForeignKey('user.id'))
+    content = Column(String)
+    timestamp = Column(DateTime, default=datetime.utcnow)
+    
 class FriendRequestStatus(PyEnum):
     PENDING = "pending"
     ACCEPTED = "accepted"

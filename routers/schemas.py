@@ -99,8 +99,7 @@ class CombinedPost(BaseModel):
     
     class Config(): 
         orm_mode = True
-    
-    
+ 
 #friend request    
 class FriendRequestBase(BaseModel):
     sender_id: int
@@ -130,3 +129,20 @@ class UserUpdate(BaseModel):
     surname: Optional[str] = None
     bio: Optional[str] = None
     social_media_link: Optional[str] = None
+
+
+#chat schema.
+
+class MessageBase(BaseModel):
+    receiver_id: int
+    content: str
+
+class MessageDisplay(BaseModel):
+    id: int
+    sender_id: int
+    receiver_id: int
+    content: str
+    timestamp: datetime
+
+    class Config:
+        orm_mode = True
