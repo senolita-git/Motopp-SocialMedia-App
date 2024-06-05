@@ -4,8 +4,12 @@ from routers.schemas import CommentBase
 from datetime import datetime
 from typing import Optional
 from fastapi.exceptions import HTTPException
+from fastapi import status
 
-def create(db: Session, request: CommentBase):
+def create(db: Session, request: CommentBase, current_user: DbUser):
+    if request.username != current_user.username:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Username does not match the current user")
+    
     if not request.post_id and not request.status_post_id:
         raise ValueError("Either post_id or status_post_id must be provided")
     

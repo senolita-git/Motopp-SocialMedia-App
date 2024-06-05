@@ -24,6 +24,10 @@ def create(request: PostBase, db: Session = Depends(get_db), current_user: UserA
     if not request.image_url_type in image_url_types:
         raise HTTPException(status_code = status.HTTP_422_UNPROCESSABLE_ENTITY, 
                             detail = "Parameter image_url_type can only take values 'absolute' or 'relative'.")
+    if request.creator_id != current_user.id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Creator ID must match the current user ID")
     return db_post.create(db, request)
 
 @router.post('/image')

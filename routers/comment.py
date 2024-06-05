@@ -20,7 +20,7 @@ def comments(post_id: Optional[int] = None, status_post_id: Optional[int] = None
 @router.post('')
 def create(request: CommentBase, db: Session = Depends(get_db), current_user: UserAuth = Depends(get_current_user)):
     try:
-        return db_comment.create(db, request)
+        return db_comment.create(db, request, current_user)
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
     

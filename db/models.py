@@ -26,6 +26,8 @@ class DbUser(Base):
     status = relationship('DbStatus', back_populates='user')
     owned_groups = relationship('DbGroup', back_populates='owner')
     groups = relationship('DbGroup', secondary=group_membership, back_populates='members')
+    sent_messages = relationship('DbMessage', foreign_keys='DbMessage.sender_id', back_populates='sender')
+    received_messages = relationship('DbMessage', foreign_keys='DbMessage.receiver_id', back_populates='receiver')
 
 #we will create another table for creating post
 class DbPost(Base):
@@ -79,7 +81,10 @@ class DbMessage(Base):
     sender_id = Column(Integer, ForeignKey('user.id'))
     receiver_id = Column(Integer, ForeignKey('user.id'))
     content = Column(String)
-    timestamp = Column(DateTime, default=datetime.utcnow)
+    timestamp = Column(DateTime)
+    
+    sender = relationship('DbUser', foreign_keys=[sender_id])
+    receiver = relationship('DbUser', foreign_keys=[receiver_id])
     
 class FriendRequestStatus(PyEnum):
     PENDING = "pending"
