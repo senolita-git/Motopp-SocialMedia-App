@@ -1,10 +1,10 @@
 import datetime
 from db.database import Base
-from sqlalchemy import Column, Integer, String, DateTime, Table
+from sqlalchemy import Column, Integer, String, DateTime, Table, Enum as SQLEnum
 from sqlalchemy.sql.schema import ForeignKey
 from sqlalchemy.orm import relationship
 from datetime import datetime
-
+from enum import Enum as PyEnum
 
 group_membership = Table('group_membership', Base.metadata,
                          Column('user_id', Integer, ForeignKey('user.id'), primary_key = True),
@@ -17,6 +17,10 @@ class DbUser(Base):
     username = Column(String)
     email = Column(String)
     password = Column(String)
+    name = Column(String)  # Add name field
+    surname = Column(String)  # Add surname field
+    bio = Column(String) # Add bio field
+    social_media_link = Column(String)
 
     items = relationship('DbPost', back_populates='user')
     status = relationship('DbStatus', back_populates='user')
@@ -42,7 +46,10 @@ class DbComment(Base):
     username = Column(String)
     timestamp = Column(DateTime)
     post_id = Column(Integer, ForeignKey('post.id'))
+    status_post_id = Column(Integer, ForeignKey('status_post.id'))
+    
     post = relationship("DbPost", back_populates="comments")
+    status_post = relationship('DbStatus', back_populates='comments')
 
 class DbStatus(Base):
     __tablename__ = 'status_post'
@@ -51,6 +58,7 @@ class DbStatus(Base):
     user_id = Column(Integer, ForeignKey('user.id'))
     timestamp = Column(DateTime)
     user = relationship('DbUser', back_populates='status')
+    comments = relationship('DbComment', back_populates='status_post')
 
 class DbGroup(Base):
     __tablename__ = 'groups'
@@ -63,7 +71,6 @@ class DbGroup(Base):
     members = relationship('DbUser', secondary=group_membership, back_populates='groups')
 
 
-
 #chat models
 
 class DbMessage(Base):
@@ -73,3 +80,18 @@ class DbMessage(Base):
     receiver_id = Column(Integer, ForeignKey('user.id'))
     content = Column(String)
     timestamp = Column(DateTime, default=datetime.utcnow)
+    
+class FriendRequestStatus(PyEnum):
+    PENDING = "pending"
+    ACCEPTED = "accepted"
+    DENIED = "denied"
+
+class DbFriendRequest(Base):
+    __tablename__ = 'friend_request'
+    id = Column(Integer, primary_key=True, index=True)
+    sender_id = Column(Integer, ForeignKey('user.id'))
+    receiver_id = Column(Integer, ForeignKey('user.id'))
+    status = Column(SQLEnum(FriendRequestStatus), default=FriendRequestStatus.PENDING)
+
+    sender = relationship('DbUser', foreign_keys=[sender_id])
+    receiver = relationship('DbUser', foreign_keys=[receiver_id])

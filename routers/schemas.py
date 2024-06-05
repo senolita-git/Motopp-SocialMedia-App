@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 from datetime import datetime
-from typing import List, Union
+from typing import List, Union, Optional
+from db.models import FriendRequestStatus
 
 class UserBase(BaseModel):
     username: str
@@ -10,6 +11,10 @@ class UserBase(BaseModel):
 class UserDisplay(BaseModel):
     username: str
     email: str
+    name: Optional[str] = None
+    surname: Optional[str] = None
+    bio: Optional[str] = None
+    social_media_link: Optional[str] = None
     class Config():
         orm_mode = True
 
@@ -61,7 +66,8 @@ class Comment(BaseModel):
 class CommentBase(BaseModel):
     username: str
     text: str
-    post_id: int
+    post_id: Optional[int] = None
+    status_post_id: Optional[int] = None
 
 class StatusPostCreate(BaseModel):
     text: str
@@ -93,7 +99,36 @@ class CombinedPost(BaseModel):
     
     class Config(): 
         orm_mode = True
+ 
+#friend request    
+class FriendRequestBase(BaseModel):
+    sender_id: int
+    receiver_id: int
+    status: FriendRequestStatus
 
+    class Config:
+        orm_mode = True
+
+class FriendRequestCreate(BaseModel):
+    receiver_id: int
+
+class FriendRequestResponse(BaseModel):
+    id: int
+    sender: User
+    receiver: User
+    status: FriendRequestStatus
+
+    class Config:
+        orm_mode = True
+
+class FriendRequestUpdate(BaseModel):
+    status: FriendRequestStatus
+    
+class UserUpdate(BaseModel):
+    name: Optional[str] = None
+    surname: Optional[str] = None
+    bio: Optional[str] = None
+    social_media_link: Optional[str] = None
 
 
 #chat schema.
