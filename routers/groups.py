@@ -18,9 +18,9 @@ def create_group(group: GroupCreate, db: Session = Depends(get_db), current_user
     db.refresh(db_group)
     return db_group
 
-@router.post("/{group_id}/join", response_model=GroupDisplay)
-def join_group(group_id: int, db: Session = Depends(get_db), current_user: UserAuth = Depends(get_current_user)):
-    group = db.query(DbGroup).filter(DbGroup.id == group_id).first()
+@router.post("/{id}/members", response_model=GroupDisplay)
+def join_group(id: int, db: Session = Depends(get_db), current_user: UserAuth = Depends(get_current_user)):
+    group = db.query(DbGroup).filter(DbGroup.id == id).first()
     if not group:
         raise HTTPException(status_code=404, detail="Group not found")
     group.members.append(current_user)
@@ -34,13 +34,13 @@ def list_group_members(group_id: int, db: Session = Depends(get_db), current_use
         raise HTTPException(status_code=404, detail="Group not found")
     return group.members
 
-@router.post('/leave/{group_id}', response_model=GroupDisplay)
+@router.delete('/{id}/member/{member_id}', status_code=204)
 def leave_group(
-    group_id: int, 
+    id: int, 
     db: Session = Depends(get_db), 
     current_user: UserAuth = Depends(get_current_user)
 ):
-    group = db.query(DbGroup).filter(DbGroup.id == group_id).first()
+    group = db.query(DbGroup).filter(DbGroup.id == id).first()
     if not group:
         raise HTTPException(status_code=404, detail="Group not found")
 

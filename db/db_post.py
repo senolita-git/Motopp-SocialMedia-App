@@ -32,4 +32,4 @@ def delete(db: Session, id:int, user_id: int):
     
     db.delete(post)
     db.commit()
-    return 'ok'
+    return
