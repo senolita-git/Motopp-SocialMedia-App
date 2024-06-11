@@ -43,6 +43,6 @@ def upload_image(image: UploadFile = File(...), current_user: UserAuth = Depends
         return {'filename': path}
     
 
-@router.delete('/{id}') # id of the post
+@router.delete('/{id}', status_code=204) # id of the post
 def delete(id: int, db:Session = Depends(get_db), current_user: UserAuth = Depends(get_current_user)):
     return db_post.delete(db, id, current_user.id)
