@@ -26,3 +26,17 @@ def update_user(
     if current_user.id != user_id:
         raise HTTPException(status_code=403, detail="Not authorized to update this user")
     return db_user.update(db, user_id, request)
+
+@router.delete('/{user_id}', response_model=UserDisplay)
+def delete_user(user_id: int, db: Session = Depends(get_db), current_user: DbUser = Depends(get_current_user)):
+    user = db.query(DbUser).filter(DbUser.id == user_id).first()
+    
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    if user.id != current_user.id:
+        raise HTTPException(status_code=403, detail="You are not authorized to delete this user")
+    
+    db.delete(user)
+    db.commit()
+    return user

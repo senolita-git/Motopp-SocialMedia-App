@@ -22,9 +22,9 @@ class DbUser(Base):
     bio = Column(String) # Add bio field
     social_media_link = Column(String)
 
-    items = relationship('DbPost', back_populates='user')
-    status = relationship('DbStatus', back_populates='user')
-    owned_groups = relationship('DbGroup', back_populates='owner')
+    items = relationship('DbPost', back_populates='user', cascade="all, delete-orphan")
+    status = relationship('DbStatus', back_populates='user', cascade="all, delete-orphan")
+    owned_groups = relationship('DbGroup', back_populates='owner', cascade="all, delete-orphan")
     groups = relationship('DbGroup', secondary=group_membership, back_populates='members')
     sent_messages = relationship('DbMessage', foreign_keys='DbMessage.sender_id', back_populates='sender')
     received_messages = relationship('DbMessage', foreign_keys='DbMessage.receiver_id', back_populates='receiver')
@@ -37,9 +37,9 @@ class DbPost(Base):
     image_url_type = Column(String)
     caption = Column(String)
     timestamp = Column(DateTime)
-    user_id = Column(Integer, ForeignKey('user.id'))
+    user_id = Column(Integer, ForeignKey('user.id', ondelete='CASCADE'))
     user = relationship('DbUser', back_populates='items')
-    comments = relationship('DbComment', back_populates='post')
+    comments = relationship('DbComment', back_populates='post', cascade="all, delete-orphan")
 
 class DbComment(Base):
     __tablename__ = 'comment'
@@ -47,8 +47,8 @@ class DbComment(Base):
     text = Column(String)
     username = Column(String)
     timestamp = Column(DateTime)
-    post_id = Column(Integer, ForeignKey('post.id'))
-    status_post_id = Column(Integer, ForeignKey('status_post.id'))
+    post_id = Column(Integer, ForeignKey('post.id', ondelete='CASCADE'))
+    status_post_id = Column(Integer, ForeignKey('status_post.id', ondelete='CASCADE'))
     
     post = relationship("DbPost", back_populates="comments")
     status_post = relationship('DbStatus', back_populates='comments')
