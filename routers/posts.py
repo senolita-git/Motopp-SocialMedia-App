@@ -36,4 +36,4 @@ def get_all_posts(db: Session = Depends(get_db)):
     # Sort by timestamp
     combined_posts.sort(key=lambda x: x.timestamp, reverse=True)
 
-    return {"posts": combined_posts}
+    return combined_posts
