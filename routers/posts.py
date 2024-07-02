@@ -18,17 +18,19 @@ def get_all_posts(db: Session = Depends(get_db)):
         image_url_type=post.image_url_type,
         caption=post.caption,
         timestamp=post.timestamp,
-        user=User(username = post.user.username)
-        )
-                       for post in image_posts]
+        user_id=post.user_id,
+        user=User(id=post.user.id, username=post.user.username)
+    ) for post in image_posts]
 
     # Fetch all status posts
     status_posts = db.query(DbStatus).all()
-    status_post_list = [StatusPostDisplay(id=post.id,
+    status_post_list = [StatusPostDisplay(
+        id=post.id,
         text=post.text,
         timestamp=post.timestamp,
-        user=User(username = post.user.username))
-                        for post in status_posts]
+        user_id=post.user_id,
+        user=User(id=post.user.id, username=post.user.username)
+    ) for post in status_posts]
 
     # Combine both lists
     combined_posts = image_post_list + status_post_list
