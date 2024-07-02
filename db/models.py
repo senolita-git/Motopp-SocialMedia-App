@@ -21,6 +21,7 @@ class DbUser(Base):
     surname = Column(String)  # Add surname field
     bio = Column(String) # Add bio field
     social_media_link = Column(String)
+    profile_picture_url = Column(String, nullable=True)
 
     items = relationship('DbPost', back_populates='user', cascade="all, delete-orphan")
     status = relationship('DbStatus', back_populates='user', cascade="all, delete-orphan")
@@ -28,6 +29,7 @@ class DbUser(Base):
     groups = relationship('DbGroup', secondary=group_membership, back_populates='members')
     sent_messages = relationship('DbMessage', foreign_keys='DbMessage.sender_id', back_populates='sender')
     received_messages = relationship('DbMessage', foreign_keys='DbMessage.receiver_id', back_populates='receiver')
+    comments = relationship('DbComment', foreign_keys='DbComment.user_id', back_populates='user', cascade="all, delete-orphan")
 
 #we will create another table for creating post
 class DbPost(Base):
@@ -47,9 +49,11 @@ class DbComment(Base):
     text = Column(String)
     username = Column(String)
     timestamp = Column(DateTime)
+    user_id = Column(Integer, ForeignKey('user.id', ondelete='CASCADE'))
     post_id = Column(Integer, ForeignKey('post.id', ondelete='CASCADE'))
     status_post_id = Column(Integer, ForeignKey('status_post.id', ondelete='CASCADE'))
     
+    user = relationship('DbUser', foreign_keys=[user_id])
     post = relationship("DbPost", back_populates="comments")
     status_post = relationship('DbStatus', back_populates='comments')
 

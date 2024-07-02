@@ -16,6 +16,7 @@ class UserDisplay(BaseModel):
     surname: Optional[str] = None
     bio: Optional[str] = None
     social_media_link: Optional[str] = None
+    profile_picture_url: Optional[str] = None
     class Config():
         from_attributes = True
 
@@ -47,6 +48,7 @@ class PostDisplay(BaseModel):
     caption: str
     timestamp: datetime
     user: User
+    user_id: int
     class Config(): #we will not get any error when we try to receive postdisplay data type
         from_attributes = True 
 
@@ -58,6 +60,7 @@ class UserAuth(BaseModel):
 
     #for post display
 class Comment(BaseModel):
+    id: int
     text: str
     username: str
     timestamp: datetime
@@ -65,6 +68,7 @@ class Comment(BaseModel):
         from_attributes = True
 
 class CommentBase(BaseModel):
+    user_id: int
     username: str
     text: str
     post_id: Optional[int] = None
@@ -79,6 +83,7 @@ class StatusPostDisplay(BaseModel):
     text: str
     timestamp: datetime
     user: User
+    user_id: int
     class Config(): 
         from_attributes = True
 
@@ -124,6 +129,15 @@ class FriendRequestResponse(BaseModel):
 
 class FriendRequestUpdate(BaseModel):
     status: FriendRequestStatus
+
+class FriendUserDisplay(BaseModel):
+    id: int
+    username: str
+    name: Optional[str] = None
+    surname: Optional[str] = None
+
+    class Config():
+        from_attributes = True
     
 class UserUpdate(BaseModel):
     name: Optional[str] = None
@@ -147,3 +161,4 @@ class MessageDisplay(BaseModel):
 
     class Config:
         from_attributes = True
+

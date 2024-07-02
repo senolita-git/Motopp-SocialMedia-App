@@ -6,6 +6,7 @@ from db import db_comment
 from routers.schemas import CommentBase, UserAuth
 from auth.oauth2 import get_current_user
 from fastapi.exceptions import HTTPException
+from db.models import DbComment
 
 router = APIRouter(
     prefix = '/comment',
@@ -34,3 +35,4 @@ def delete(comment_id: int, db: Session = Depends(get_db), current_user: UserAut
         raise HTTPException(status_code=403, detail="Not authorized to delete this comment")
 
     return db_comment.delete(db, comment_id)
+

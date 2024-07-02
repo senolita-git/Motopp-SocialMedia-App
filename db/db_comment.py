@@ -23,13 +23,18 @@ def create(db: Session, request: CommentBase, current_user: DbUser):
         if not status_post:
             raise HTTPException(status_code=404, detail="Status post not found")
         
-    user = db.query(DbUser).filter(DbUser.username == request.username).first()
+    user = db.query(DbUser).filter(DbUser.id == request.user_id).first()
     if not user:
-        raise HTTPException(status_code=404, detail="Username not found")
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    if user.username != current_user.username:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="User does not match the current user")
+
     
     new_comment = DbComment(
         text=request.text,
         username=request.username,
+        user_id=request.user_id,
         post_id=request.post_id,
         timestamp=datetime.now(),
         status_post_id=request.status_post_id,

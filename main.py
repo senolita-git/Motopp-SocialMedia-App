@@ -40,3 +40,4 @@ app.add_middleware(
 models.Base.metadata.create_all(engine)
 
 app.mount('/images', StaticFiles(directory = 'images'), name= 'images')
+app.mount("/static", StaticFiles(directory="static"), name="static")
